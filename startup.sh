@@ -1,13 +1,14 @@
 #!/bin/bash
-# Azure App Service startup script
-# Equivalent of AWS EC2 userdata.sh
+set -e
 
-pip install -r /home/site/wwwroot/requirements.txt
+cd /home/site/wwwroot
+
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 
 cd /home/site/wwwroot/src
 
 python manage.py collectstatic --noinput
-python manage.py makemigrations
-python manage.py migrate
+python manage.py migrate --noinput
 
-gunicorn --bind=0.0.0.0:8000 --timeout=600 --workers=2 cblog.wsgi:application
+exec gunicorn --bind=0.0.0.0:8000 --timeout=600 --workers=2 cblog.wsgi:application

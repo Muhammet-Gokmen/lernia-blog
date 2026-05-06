@@ -6,6 +6,8 @@ AWS S3 / RDS → Azure Blob Storage / Azure Database for MySQL Flexible Server
 from pathlib import Path
 from decouple import config
 import os
+import pymysql
+pymysql.install_as_MySQLdb()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
