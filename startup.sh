@@ -1,6 +1,15 @@
 #!/bin/bash
 
-source /home/site/wwwroot/antenv/bin/activate
+VENV="/home/site/wwwroot/venv"
+
+if [ ! -d "$VENV" ]; then
+    python -m venv $VENV
+    $VENV/bin/pip install -r /home/site/wwwroot/requirements.txt
+else
+    $VENV/bin/pip install -q -r /home/site/wwwroot/requirements.txt
+fi
+
+source $VENV/bin/activate
 
 cd /home/site/wwwroot/src
 
