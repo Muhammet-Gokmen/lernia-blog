@@ -63,9 +63,8 @@ Doldurulması gerekenler:
 
 | Rehber | Açıklama |
 |--------|----------|
-| [azure/README_solution_student.md](azure/README_solution_student.md) | Portal üzerinden adım adım kurulum |
-| [azure/README_cli_solution.md](azure/README_cli_solution.md) | Azure CLI ile otomatik kurulum |
-| [Readme_solution_azure_student.md](Readme_solution_azure_student.md) | Detaylı İngilizce rehber |
+| [azure/PORTAL_SOLUTION.md](azure/PORTAL_SOLUTION.md) | Azure Portal üzerinden adım adım kurulum |
+| [azure/CLI_SOLUTION.md](azure/CLI_SOLUTION.md) | Bash terminalde Azure CLI ile tam otomatik kurulum |
 
 ## Proje Yapısı
 
