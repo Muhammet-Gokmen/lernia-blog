@@ -274,22 +274,22 @@ AWS `settings.py` yerine `azure/src/cblog/settings.py` dosyasını kullanacaksı
 `src/.env` dosyasını aşağıdaki değerlerle doldurun:
 
 ```env
-# Django
-SECRET_KEY=REMOVED-SECRET-KEY-2
+# Django — üret: python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+SECRET_KEY=<your-django-secret-key>
 
 # Azure MySQL
 DB_NAME=lerniablog
 DB_USER=adminuser
-DB_PASSWORD=REMOVED-PASSWORD
-DB_HOST=lernia-mysql.mysql.database.azure.com
+DB_PASSWORD=<YOUR-DB-PASSWORD>
+DB_HOST=<your-mysql-server>.mysql.database.azure.com
 DB_PORT=3306
 
 # Azure Blob Storage
-AZURE_STORAGE_ACCOUNT_NAME=lerniablobstorage
+AZURE_STORAGE_ACCOUNT_NAME=<your-storage-account>
 AZURE_STORAGE_ACCOUNT_KEY=<Adım 4d'den kopyaladığınız key>
 
 # App Service hostname
-AZURE_APP_HOSTNAME=lernia-app.azurewebsites.net
+AZURE_APP_HOSTNAME=<your-app>.azurewebsites.net
 ```
 
 ### 5c. `storages.py` Değiştirme
@@ -346,15 +346,15 @@ AWS Secrets Manager / Parameter Store yerine App Service **Configuration** kulla
 
    | Name | Value |
    |---|---|
-   | SECRET_KEY | `i2^$(%im!!)@...` |
+   | SECRET_KEY | `<your-django-secret-key>` |
    | DB_NAME | `lerniablog` |
    | DB_USER | `adminuser` |
-   | DB_PASSWORD | `REMOVED-PASSWORD` |
-   | DB_HOST | `lernia-mysql.mysql.database.azure.com` |
+   | DB_PASSWORD | `<YOUR-DB-PASSWORD>` |
+   | DB_HOST | `<your-mysql-server>.mysql.database.azure.com` |
    | DB_PORT | `3306` |
-   | AZURE_STORAGE_ACCOUNT_NAME | `lerniablobstorage` |
-   | AZURE_STORAGE_ACCOUNT_KEY | `<key>` |
-   | AZURE_APP_HOSTNAME | `lernia-app.azurewebsites.net` |
+   | AZURE_STORAGE_ACCOUNT_NAME | `<your-storage-account>` |
+   | AZURE_STORAGE_ACCOUNT_KEY | `<your-storage-key>` |
+   | AZURE_APP_HOSTNAME | `<your-app>.azurewebsites.net` |
 
 3. **Save** → **Continue**
 

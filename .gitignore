@@ -1,5 +1,6 @@
-# Environment
+# Environment — never commit real credentials
 src/.env
+azure/src/.env
 .env
 *.env
 

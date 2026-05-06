@@ -18,7 +18,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'lernia-app.azurewebsites.net',
+    config('AZURE_APP_HOSTNAME', default=''),
 ]
 
 INSTALLED_APPS = [
@@ -74,11 +74,11 @@ WSGI_APPLICATION = 'cblog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lerniablog',
-        'USER': 'adminuser',
-        'PASSWORD': config('PASSWORD'),  # written in src/.env — do NOT put it here
-        'HOST': 'lernia-mysql1573458637.mysql.database.azure.com',
-        'PORT': '3306',    # MySQL port
+        'NAME': config('DB_NAME', default='lerniablog'),
+        'USER': config('DB_USER', default='adminuser'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': '3306',
         'OPTIONS': {
             'ssl': {'ssl-ca': '/etc/ssl/certs/DigiCertGlobalRootCA.crt.pem'},
         },
@@ -113,9 +113,9 @@ LOGIN_URL = "login"
 # Write your storage account name and key below.
 # storages.py class AzureMediaStorage handles the 'media' container.
 
-AZURE_ACCOUNT_NAME = 'lerniablob869090428'
+AZURE_ACCOUNT_NAME = config('AZURE_STORAGE_ACCOUNT_NAME')
 
-AZURE_ACCOUNT_KEY  = config('AZURE_STORAGE_KEY')  # written in src/.env — do NOT put it here
+AZURE_ACCOUNT_KEY  = config('AZURE_STORAGE_ACCOUNT_KEY')
 
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 

@@ -14,7 +14,7 @@ MYSQL_SERVER="lernia-mysql1573458637"
 STORAGE="lerniablob869090428"
 DB_NAME="lerniablog"
 DB_USER="adminuser"
-DB_PASSWORD="REMOVED-PASSWORD"
+DB_PASSWORD="<YOUR-DB-PASSWORD>"
 APP_PLAN="lernia-plan"
 APP_NAME="lernia-app"
 FUNC_APP="lernia-func"
@@ -182,19 +182,20 @@ echo $STORAGE_KEY
 
 ```python
 ALLOWED_HOSTS = [
-    'lernia-app.azurewebsites.net',
+    config('AZURE_APP_HOSTNAME', default=''),
 ]
 
 DATABASES = {
     'default': {
-        'NAME': 'lerniablog',
-        'USER': 'adminuser',
-        'HOST': 'lernia-mysql1573458637.mysql.database.azure.com',
+        'NAME': config('DB_NAME', default='lerniablog'),
+        'USER': config('DB_USER', default='adminuser'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
         ...
     }
 }
 
-AZURE_ACCOUNT_NAME = 'lerniablob869090428'
+AZURE_ACCOUNT_NAME = config('AZURE_STORAGE_ACCOUNT_NAME')
 ```
 
 ### 5b. `src/.env` — STORAGE_KEY Ekle ⚠️
@@ -211,9 +212,9 @@ az storage account keys list \
 Çıktıyı `src/.env` dosyasındaki `AZURE_STORAGE_KEY` satırına yapıştır:
 
 ```
-SECRET_KEY=REMOVED-SECRET-KEY-2
-PASSWORD=REMOVED-PASSWORD
-AZURE_STORAGE_KEY=<yukarıdaki komutun çıktısı>
+SECRET_KEY=<python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())">
+DB_PASSWORD=<YOUR-DB-PASSWORD>
+AZURE_STORAGE_ACCOUNT_KEY=<yukarıdaki komutun çıktısı>
 ```
 
 ---
@@ -238,7 +239,7 @@ az webapp create \
   --name $APP_NAME \
   --resource-group $RG \
   --plan $APP_PLAN \
-  --runtime "PYTHON:3.8"
+  --runtime "PYTHON:3.12"
 ```
 
 ### 6c. Environment Variables Ayarla (App Service Configuration)
@@ -248,9 +249,14 @@ az webapp config appsettings set \
   --name $APP_NAME \
   --resource-group $RG \
   --settings \
-    SECRET_KEY="REMOVED-SECRET-KEY-2" \
-    PASSWORD="REMOVED-PASSWORD" \
-    AZURE_STORAGE_KEY="$STORAGE_KEY"
+    SECRET_KEY="$SECRET_KEY" \
+    DB_PASSWORD="$DB_PASSWORD" \
+    DB_HOST="$MYSQL_SERVER.mysql.database.azure.com" \
+    DB_NAME="lerniablog" \
+    DB_USER="adminuser" \
+    AZURE_APP_HOSTNAME="$APP_NAME.azurewebsites.net" \
+    AZURE_STORAGE_ACCOUNT_NAME="$STORAGE" \
+    AZURE_STORAGE_ACCOUNT_KEY="$STORAGE_KEY"
 ```
 
 ### 6d. Startup Script Ayarla
@@ -264,30 +270,32 @@ az webapp config set \
 
 ### 6e. VNet Integration (App Service → MySQL private bağlantı)
 
-```bash
-# Private subnet ID'yi al
-SUBNET_ID=$(az network vnet subnet show \
-  --resource-group $RG \
-  --vnet-name $VNET \
-  --name private-subnet \
-  --query id -o tsv)
+> **Not:** `private-subnet` MySQL'e delegated — App Service için ayrı subnet gerekir.
+
+```powershell
+# App Service için ayrı subnet oluştur
+az network vnet subnet create `
+  --resource-group $RG `
+  --vnet-name $VNET `
+  --name app-subnet `
+  --address-prefix 10.0.3.0/24 `
+  --delegations Microsoft.Web/serverFarms
 
 # VNet Integration ekle
-az webapp vnet-integration add \
-  --name $APP_NAME \
-  --resource-group $RG \
-  --vnet $VNET \
-  --subnet private-subnet
+az webapp vnet-integration add `
+  --name $APP_NAME `
+  --resource-group $RG `
+  --vnet $VNET `
+  --subnet app-subnet
 ```
 
 ### 6f. GitHub'dan Deploy Et
 
 ```bash
-# GitHub repo URL'ini gir
 az webapp deployment source config \
   --name $APP_NAME \
   --resource-group $RG \
-  --repo-url https://github.com/<KULLANICI_ADIN>/<REPO_ADIN> \
+  --repo-url https://github.com/Muhammet-Gokmen/lernia-blog \
   --branch main \
   --manual-integration
 ```
@@ -317,12 +325,15 @@ az webapp show \
 
 ### 7a. Function App Oluştur
 
+> **Not:** Azure for Students'ta Consumption (Serverless) plan kullanılamıyor.  
+> Bunun yerine mevcut App Service Plan (`lernia-plan`) üzerinde çalıştırıyoruz.
+
 ```bash
 az functionapp create \
   --name $FUNC_APP \
   --resource-group $RG \
   --storage-account $STORAGE \
-  --consumption-plan-location $LOCATION \
+  --plan $APP_PLAN \
   --runtime python \
   --runtime-version 3.9 \
   --functions-version 4 \

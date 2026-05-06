@@ -455,8 +455,14 @@ DATABASES = {
 Create the `src/.env` file:
 
 ```text
-SECRET_KEY=REMOVED-SECRET-KEY-2
-PASSWORD=REMOVED-PASSWORD
+SECRET_KEY=<run: python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())">
+DB_PASSWORD=<YOUR-DB-PASSWORD>
+DB_HOST=<your-mysql-server>.mysql.database.azure.com
+DB_NAME=lerniablog
+DB_USER=adminuser
+AZURE_APP_HOSTNAME=<your-app>.azurewebsites.net
+AZURE_STORAGE_ACCOUNT_NAME=<your-storage-account>
+AZURE_STORAGE_ACCOUNT_KEY=<your-storage-key>
 ```
 
 Also update `ALLOWED_HOSTS` in `src/cblog/settings.py` — add your App Service hostname:
@@ -567,11 +573,11 @@ click Add
 Add each variable:
 
 ```text
-SECRET_KEY          : REMOVED-SECRET-KEY-2
-PASSWORD            : REMOVED-PASSWORD
-DB_NAME             : database1
-DB_USER             : admin
-DB_HOST             : azure-capstone-mysql.mysql.database.azure.com
+SECRET_KEY          : <your-django-secret-key>
+DB_PASSWORD         : <YOUR-DB-PASSWORD>
+DB_NAME             : lerniablog
+DB_USER             : adminuser
+DB_HOST             : <your-mysql-server>.mysql.database.azure.com
 DB_PORT             : 3306
 AZURE_STORAGE_ACCOUNT_NAME : azurecapstoneblob<yourname>
 AZURE_STORAGE_ACCOUNT_KEY  : <your-account-key-from-step-5d>
