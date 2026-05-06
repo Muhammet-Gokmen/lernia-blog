@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# Activate virtual environment created by Oryx during build
-if [ -d /home/site/wwwroot/antenv ]; then
-    source /home/site/wwwroot/antenv/bin/activate
-fi
+cd /home/site/wwwroot
+
+python -m pip install -r requirements.txt
 
 cd /home/site/wwwroot/src
 
