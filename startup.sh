@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source /antenv/bin/activate
+cd /home/site/wwwroot
+
+python -m pip install -r requirements.txt
 
 cd /home/site/wwwroot/src
 
