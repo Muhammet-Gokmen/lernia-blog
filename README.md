@@ -1,6 +1,6 @@
 # Django Blog App — Azure Student Deployment
 
-Django framework ile yazılmış blog uygulamasının **Microsoft Azure** üzerinde deploy edilmesi.
+Django blog app deployed on Azure — App Service, MySQL, Blob Storage, CDN, Traffic Manager, Azure Functions
 
 ## Mimari
 
